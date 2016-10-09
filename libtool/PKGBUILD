@@ -1,0 +1,20 @@
+pkgname=libtool
+pkgver=2.4.6
+pkgrel=1
+pkgdesc='A generic library support script'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/libtool/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('a6eef35f3cbccf2c9e2667f44a476ebc80ab888725eb768e91a3a6c33b8c931afc46eb23efaee76c8696d3e4eed74ab1c71157bcb924f38ee912c8a90a6521a4')
+
+build() {      
+    cd $srcdir/$pkgname-$pkgver
+    ./configure --prefix=/usr
+    make
+}
+
+package() {     
+    cd $srcdir/$pkgname-$pkgver/ 
+    make DESTDIR=$pkgdir install
+}
+

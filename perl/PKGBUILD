@@ -1,0 +1,28 @@
+pkgname=perl
+pkgver=5.24.0
+pkgrel=1
+pkgdesc='A highly capable, feature-rich programming language'
+arch=('x86_64')
+source=("http://www.cpan.org/src/5.0/$pkgname-$pkgver.tar.bz2")
+
+sha512sums=('05ecc6774da475d14f426a850be7adf754fcb17a2fa85a67aeaf8ddb9c86ae8b1ee654e803ebae5ccdaa73ad3e35188e3254ac9452b47cd4f8ffe47e67d15f53')
+
+build() {   
+    export BUILD_ZLIB=False
+    export BUILD_BZIP2=0    
+    cd $srcdir/$pkgname-$pkgver
+    sh Configure -des -Dprefix=/usr                 \
+                  -Dvendorprefix=/usr           \
+                  -Dman1dir=/usr/share/man/man1 \
+                  -Dman3dir=/usr/share/man/man3 \
+                  -Dpager="/usr/bin/less -isR"  \
+                  -Duseshrplibr
+    make
+}
+
+package() {     
+    cd $srcdir/$pkgname-$pkgver/ 
+    make DESTDIR=$pkgdir install
+    unset BUILD_ZLIB BUILD_BZIP2
+}
+

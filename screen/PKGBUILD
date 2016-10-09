@@ -1,0 +1,29 @@
+pkgname=screen
+pkgver=4.4.0
+pkgrel=1
+pkgdesc='A program for creating virtual detachable terminal sessions'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('6e43f85c419f778822ec85e4340c95769e981a3d51abdeb5f26c6ebb840da9ab11b351ecc7f380ceea39bcfaa87f1124cfebd6af4ecb62b886eb189e7b79981b')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr                     \
+            --infodir=/usr/share/info         \
+            --mandir=/usr/share/man           \
+            --with-socket-dir=/run/screen     \
+            --with-pty-group=5                \
+            --with-sys-screenrc=/etc/screenrc &&
+
+    sed -i -e "s%/usr/local/etc/screenrc%/etc/screenrc%" {etc,doc}/* &&
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/etc
+    install -m 644 etc/etcscreenrc $pkgdir/etc/screenrc
+}
+

@@ -1,0 +1,24 @@
+pkgname=man-db
+pkgver=2.7.5
+pkgrel=1
+pkgdesc='Programs for finding and viewing man pages'
+arch=('x86_64')
+source=("http://download.savannah.gnu.org/releases/$pkgname/$pkgname-$pkgver.tar.xz")
+sha512sums=('8e82fb437372261a2b33e1acb45b6322dac1864f13b20968d6a09b27edec795111c25bafcb7f6f3550784d4621eb4871f76d0275d7fa9e01644a5ced60666933')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr                        \
+            --docdir=/usr/share/doc/man-db-2.7.5 \
+            --sysconfdir=/etc                    \
+            --disable-setuid                     \
+            --with-browser=/usr/bin/lynx         \
+            --with-vgrind=/usr/bin/vgrind        \
+            --with-grap=/usr/bin/grap
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install
+	sed -i "s:man root:root root:g" $pkgdir/usr/lib/tmpfiles.d/man-db.conf
+
+}

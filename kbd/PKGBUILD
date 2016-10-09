@@ -1,0 +1,22 @@
+pkgname=kbd
+pkgver=2.0.3
+pkgrel=1
+pkgdesc='A package that contains key-table files, console fonts, and keyboard utilities'
+arch=('x86_64')
+source=("https://www.kernel.org/pub/linux/utils/$pkgname/$pkgname-$pkgver.tar.xz" 
+"http://www.linuxfromscratch.org/patches/lfs/7.10/$pkgname-$pkgver-backspace-1.patch")
+sha512sums=('522718859c2a95abee06a50dd0a7cfe7bb9c8f4b3959d54fd9e56cef23acc85b9af85405aa4953f20cd029397412051d72c8b1b0d639ba3a26b4952f89ef6a3f'
+            'd1ec0d322036073f436cdc326d9f3798c2f0dfc2e5222d6703dbb479ebd4f87ce6ea40e28a67a329f4c44c2c5f45a0fc3ee62d5ef2925766bd3358a8835a95c4')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	patch -Np1 -i $srcdir/kbd-2.0.3-backspace-1.patch
+	sed -i 's/\(RESIZECONS_PROGS=\)yes/\1no/g' configure
+	sed -i 's/resizecons.8 //' docs/man/man8/Makefile.in
+	./configure --prefix=/usr --disable-vlock
+	make
+
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install
+}

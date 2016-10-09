@@ -1,0 +1,20 @@
+pkgname=less
+pkgver=481
+pkgrel=1
+pkgdesc='A text file pager'
+arch=('x86_64')
+source=("http://www.greenwoodsoftware.com/less/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('29995757ac416ed6770cf6e82e6fe325bd1d61d51666d80c4fe72b2b4217b0b1d706d337d89ed54bdc4d83d57f3e2c0166e642b20ef2ad194e52aad630b3e717')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --sysconfdir=/etc
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+}
+

@@ -1,0 +1,24 @@
+pkgname=attr
+pkgver=2.4.47
+pkgrel=1
+pkgdesc='Utilities to administer attributes on filesystem objects'
+arch=('x86_64')
+source=("http://download.savannah.gnu.org/releases/$pkgname/$pkgname-$pkgver.src.tar.gz")
+sha512sums=('2a333f63655758298650cf8f89c175efdc0112dcc4013e8d023e2a9a69f177e4bcb1f1d10b6666d6f2027dca4dec0833d54749952ab153d28367e1a72e6e2831')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	sed -i -e 's|/@pkg_name@|&-@pkg_version@|' include/builddefs.in
+	sed -i -e "/SUBDIRS/s|man[25]||g" man/Makefile
+	./configure --prefix=/usr \
+            --disable-static
+	make
+
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install install-dev install-lib
+	chmod -v 755 $pkgdir/usr/lib/libattr.so
+	install -d $pkgdir/lib
+	mv -v $pkgdir/usr/lib/libattr.so.* $pkgdir/lib
+	ln -sfv $(readlink /usr/lib/libattr.so) $pkgdir/usr/lib/libattr.so
+}

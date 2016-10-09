@@ -1,0 +1,17 @@
+pkgname=pacman
+pkgver=5.0.1
+pkgrel=1
+pkgdesc='The pacman package manager'
+arch=('x86_64')
+source=("https://sources.archlinux.org/other/$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('9c8c5c8a203f952561ca4aef7d52f40cbecd47f184748dcd34bdf6588ed921e63cc1688647098739d8c54f4b57b239f368bf4f27ddebf3db2f351bf4acd5f707')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix= --host=x86_64-pc-linux-gnu --with-pkg-ext=.pkg.tar.xz --with-src-ext=.pkg.tar.xz --enable-doc
+    make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install
+}

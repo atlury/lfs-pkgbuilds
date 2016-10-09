@@ -1,0 +1,18 @@
+pkgname=expat
+pkgver=2.2.0
+pkgrel=1
+pkgdesc='A stream oriented C library for parsing XML'
+arch=('x86_64')
+source=("http://prdownloads.sourceforge.net/$pkgname/$pkgname-$pkgver.tar.bz2")
+sha512sums=('2be1a6eea87b439374bfacb1fbb8e814fd8a085d5dfd3ca3be69d1af29b5dc93d36cbdec5f6843ca6d5910843c7ffbc498adc2a561b9dcece488edf3c6f8c7c8')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr --disable-static
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install
+	install -v -dm755 $pkgdir/usr/share/doc/expat-2.2.0
+	install -v -m644 doc/*.{html,png,css} $pkgdir/usr/share/doc/expat-2.2.0
+}

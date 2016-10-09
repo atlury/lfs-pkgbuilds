@@ -1,0 +1,16 @@
+pkgname=gperf
+pkgver=3.0.4
+pkgrel=1
+pkgdesc='A program that generates a perfect hash function from a key set'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('24a65ac93c9d640670b015a76378eb7e0f167bec685d03f7dc68005d5a6d693d98b2189f7a0ab5bb9e5dc700de7d417c215230f9dbe062ba119240a8da535dad')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr --docdir=/usr/share/doc/gperf-3.0.4
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install
+}

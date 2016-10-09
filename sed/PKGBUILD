@@ -1,0 +1,23 @@
+pkgname=sed
+pkgver=4.2.2
+pkgrel=1
+pkgdesc='Filters and transforms text files in a single pass'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.bz2")
+
+sha512sums=('dbbb0bb348fac54612d29182c09c88bda7096dea03bd94f03c580c24146e65a06db12808c6a1a9adc94548fa3843511e3e80b251cb07142110cf149eab23f573')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --bindir=/bin --htmldir=/usr/share/doc/sed-4.2.2
+    make
+    make html
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install
+    make DESTDIR=$pkgdir -C doc install-html
+ 
+}
+

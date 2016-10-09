@@ -1,0 +1,29 @@
+pkgname=xz
+pkgver=5.2.2
+pkgrel=1
+pkgdesc='Library and command line tools for XZ and LZMA compressed files'
+arch=('x86_64')
+source=("http://tukaani.org/xz/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('949ef90669a31b9855c5328d7f9d7e2e537c8072b700b1d2f5d69c307eb7f7635a2a4b1b5bb1bb300fba9429355a6d8935b803c505be5c0104bda9e81d0cf477')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    sed -e '/mf\.buffer = NULL/a next->coder->mf.size = 0;' \
+     -i src/liblzma/lz/lz_encoder.c
+    ./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/xz-5.2.2
+                make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/bin
+    install -d $pkgdir/lib
+    mv -v   $pkgdir/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $pkgdir/bin
+    mv -v $pkgdir/usr/lib/liblzma.so.* $pkgdir/lib
+    ln -svf $(readlink /usr/lib/liblzma.so) $pkgdir/usr/lib/liblzma.so
+}
+

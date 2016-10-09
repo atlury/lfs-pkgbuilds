@@ -1,0 +1,21 @@
+pkgname=diffutils
+pkgver=3.5
+pkgrel=1
+pkgdesc='Programs that show the differences between files or directories'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('758229637e3703215adf66c5df04126ae594424abaf2cad8f1fa482bd9759e90838c943ef56e0129beb1396f5932ed9337c8396679da3de32e49bb43d423fd6b')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    sed -i 's:= @mkdir_p@:= /bin/mkdir -p:' po/Makefile.in.in
+    ./configure --prefix=/usr
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+}
+

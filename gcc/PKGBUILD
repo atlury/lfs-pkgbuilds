@@ -1,0 +1,44 @@
+pkgname=gcc
+pkgver=6.2.0
+pkgrel=1
+pkgdesc='The GNU Compiler Collection'
+arch=('x86_64')
+
+source=("ftp://ftp.gnu.org/gnu/gcc/$pkgname-$pkgver/$pkgname-$pkgver.tar.bz2")
+
+sha512sums=('1e8b826a3d44b9d5899309894e20c03abeb352bf3d273b8ad63af814c0ee2911f1a83ce1cd4cdd2d1cb0b3e3c34e9b7ae1b2ab83dfc649ee817ab05247c76198')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    mkdir build                                          
+    cd    build                                          
+    ../configure                                         \
+        --prefix=/usr                                    \
+        --enable-languages=c,c++                         \
+        --disable-multilib                               \
+        --with-system-zlib                               \
+        --disable-bootstrap
+    make
+}
+
+#check(){
+#    cd "$srcdir/$pkgname-$pkgver"
+#    cd build
+#    ulimit -s 32768 &&
+#    make -k check
+#}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    cd build
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/usr/share/gdb/auto-load/usr/lib              
+    mv -v $pkgdir/usr/lib64/*gdb.py $pkgdir/usr/share/gdb/auto-load/usr/lib
+    chown -v -R root:root $pkgdir/usr/lib/gcc/*linux-gnu/6.2.0/include{,-fixed}
+    install -d $pkgdir/lib
+    ln -v -sf ../usr/bin/cpp $pkgdir/lib          
+    ln -v -sf gcc $pkgdir/usr/bin/cc                        
+    install -v -dm755 $pkgdir/usr/lib/bfd-plugins
+    ln -sfv ../../libexec/gcc/$(gcc -dumpmachine)/6.2.0/liblto_plugin.so $pkgdir/usr/lib/bfd-plugins/
+}
+

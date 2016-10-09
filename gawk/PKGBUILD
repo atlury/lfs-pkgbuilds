@@ -1,0 +1,22 @@
+pkgname=gawk
+pkgver=4.1.4
+pkgrel=1
+pkgdesc='Programs for manipulating text files'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('6a0e9cf086544212f54b54261dcd517b611aaf495ef99c4b7740d07e363bb00c5632f3d7fd5e12a954d5aa9793764162a57453e0e18884b29c6c54b5f444c097')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/usr/share/doc/gawk-4.1.4
+    cp -v doc/{awkforai.txt,*.{eps,pdf,jpg}} $pkgdir/usr/share/doc/gawk-4.1.4
+}
+

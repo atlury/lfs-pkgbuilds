@@ -1,0 +1,23 @@
+pkgname=tar
+pkgver=1.29
+pkgrel=1
+pkgdesc='A program for archiving files and folders'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('7249689176bd9e4e842e1e363c3f5867d9d4db9ec082ba59805047091e89de22a67153a366c23bdc1e53a3fb154df1c19a5bc1fa88267333724c5bc11bd27329')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr \
+            --bindir=/bin    
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    make DESTDIR=$pkgdir -C doc install-html docdir=/usr/share/doc/tar-1.29
+
+}
+

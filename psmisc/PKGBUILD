@@ -1,0 +1,23 @@
+pkgname=psmisc
+pkgver=22.21
+pkgrel=1
+pkgdesc='Contains programs for displaying information about running processes'
+arch=('x86_64')
+source=("http://downloads.sourceforge.net/project/psmisc/psmisc/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('766aeb45687090b88b17176c5117a603e83fe92a13c013aea72c8ee80048adf02e18c7daa52ddfb8b2135f7c9a1bcae38896cdfb8d0158728d85a446c5e0d5ae')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr
+    make 
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install
+    install -d $pkgdir/bin
+    mv -v $pkgdir/usr/bin/fuser   $pkgdir/bin
+    mv -v $pkgdir/usr/bin/killall $pkgdir/bin 
+}
+

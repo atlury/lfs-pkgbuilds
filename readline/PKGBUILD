@@ -1,0 +1,30 @@
+pkgname=readline
+pkgver=7.0
+pkgrel=1
+pkgdesc='A set of libraries that offers commandline editing and history capabilities'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('18243189d39bf0d4c8a76cddcce75243c1bae8824c686e9b6ba352667607e5b10c5feb79372a1093c1c388d821841670702e940df12eae94bcebdeed90047870')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    sed -i '/MV.*old/d' Makefile.in
+    sed -i '/{OLDSUFF}/c:' support/shlib-install
+    ./configure --prefix=/usr    \
+            --disable-static \
+            --docdir=/usr/share/doc/readline-7.0
+    make SHLIB_LIBS=-lncurses
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir SHLIB_LIBS=-lncurses install
+    install -d $pkgdir/lib
+    mv -v $pkgdir/usr/lib/lib{readline,history}.so.* $pkgdir/lib
+    ln -sfv $(readlink /usr/lib/libreadline.so) $pkgdir/usr/lib/libreadline.so
+    ln -sfv $(readlink /usr/lib/libhistory.so ) $pkgdir/usr/lib/libhistory.so
+    install -v -m644 doc/*.{ps,pdf,html,dvi} $pkgdir/usr/share/doc/readline-7.0
+ 
+}
+

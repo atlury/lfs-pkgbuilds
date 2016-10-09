@@ -1,0 +1,35 @@
+pkgname=coreutils
+pkgver=8.25
+pkgrel=1
+pkgdesc='Utilities for showing and setting the basic system characteristics'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz" "http://www.linuxfromscratch.org/patches/lfs/development/$pkgname-$pkgver-i18n-2.patch")
+
+sha512sums=('571f95d44987d373081ed4c6ac82155ad3dcd95621d7b1a7163597e80ecbbafef2cd74b2ef594587a443a1a4355083879f898a286bb0230c48112d43d076ccd6'
+            'acf291b05c5ed18e9a463f17815a61bcf061c2e0cbaf681c4712595ce012a6efb4910e1fb0a8e1a9cf7736efcf5b5529999fffa1a7cb49977329ebd7561e9c37')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    patch -Np1 -i $srcdir/coreutils-8.25-i18n-2.patch
+    ./configure \
+            --prefix=/usr            \
+            --enable-no-install-program=kill,uptime
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/bin
+    install -d $pkgdir/usr/share/man/man8
+    install -d $pkgdir/usr/sbin
+    mv -v $pkgdir/usr/bin/{cat,chgrp,chmod,chown,cp,date,dd,df,echo} $pkgdir/bin
+    mv -v $pkgdir/usr/bin/{false,ln,ls,mkdir,mknod,mv,pwd,rm} $pkgdir/bin
+    mv -v $pkgdir/usr/bin/{rmdir,stty,sync,true,uname} $pkgdir/bin
+    mv -v $pkgdir/usr/bin/chroot $pkgdir/usr/sbin
+    mv -v $pkgdir/usr/share/man/man1/chroot.1 $pkgdir/usr/share/man/man8/chroot.8
+    sed -i s/\"1\"/\"8\"/1 $pkgdir/usr/share/man/man8/chroot.8
+    mv -v $pkgdir/usr/bin/{head,sleep,nice,test,[} $pkgdir/bin
+
+}
+

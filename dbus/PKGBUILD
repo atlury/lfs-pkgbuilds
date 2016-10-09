@@ -1,0 +1,30 @@
+pkgname=dbus
+pkgver=1.10.10
+pkgrel=1
+pkgdesc='A message bus system for applications to talk to one another'
+arch=('x86_64')
+source=("http://dbus.freedesktop.org/releases/$pkgname/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('8875c43d1f100461c3482a247f1a9d3ffd4377ae81e97676e0111d57f0393d53beeebb965c8a06054bf3af1ae4c72e1e456fdbc42c7ababc4e153e5ce7c23489')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr                       \
+              --sysconfdir=/etc                   \
+              --localstatedir=/var                \
+              --disable-static                    \
+              --disable-doxygen-docs              \
+              --disable-xml-docs                  \
+              --docdir=/usr/share/doc/dbus-1.10.10 \
+              --with-console-auth-dir=/run/console
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    mv -v $pkgdir/usr/lib/libdbus-1.so.* $pkgdir/lib
+    ln -sfv $(readlink /usr/lib/libdbus-1.so) $pkgdir/usr/lib/libdbus-1.so
+    ln -sfv /etc/machine-id $pkgdir/var/lib/dbus
+}
+

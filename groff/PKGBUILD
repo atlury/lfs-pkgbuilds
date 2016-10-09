@@ -1,0 +1,21 @@
+pkgname=groff
+pkgver=1.22.3
+pkgrel=1
+pkgdesc='Programs for processing and formatting text'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('c526ab203d13a9c9d110bcd3149fe50d1cd0d309437e9e2731a7ce90d890507ebc0a2331899ecf4dba2938daa756b6094cf76fd347a0ded59797c70ccfd0c95c')
+
+build() {
+    #export CFLAGS="-march=x86-64 -mtune=generic -O2 -pipe"
+    cd "$srcdir/$pkgname-$pkgver"
+    PAGE=A4 ./configure --prefix=/usr --with-doc=no
+    make -j1
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+}
+

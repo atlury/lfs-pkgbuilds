@@ -1,0 +1,23 @@
+pkgname=gzip
+pkgver=1.8
+pkgrel=1
+pkgdesc='Programs for compressing and decompressing files'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('efd3e2439476054badeb127d9156e24e9252129111219f13fd939596c057b2a96291630b2717181984b391abf249ac8699488bbd01ceeb8a70b121c500b10c55')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/bin
+    mv -v $pkgdir/usr/bin/gzip $pkgdir/bin
+
+}
+

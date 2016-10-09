@@ -1,0 +1,13 @@
+pkgname=man-pages
+pkgver=4.07
+pkgrel=1
+pkgdesc='Describe C programming language functions, important device files, and significant configuration files'
+arch=('x86_64')
+source=("https://www.kernel.org/pub/linux/docs/man-pages/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('76b6cf7c2ae8b10652b5419e5e0141a515b02da8b83aa1bc3a7c4bb9ad0647af80b60603f8253f2f562752a970701b752d7101f83cade74019a8b0d61ecde7df')
+
+package() {
+      cd "$srcdir/$pkgname-$pkgver"
+      make DESTDIR=$pkgdir install  
+}

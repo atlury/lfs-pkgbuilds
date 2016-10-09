@@ -1,0 +1,35 @@
+pkgname=ncurses
+pkgver=6.0
+pkgrel=1
+pkgdesc='Libraries for terminal-independent handling of character screens'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu//$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('9ec194f4783dae6de8c529cac31b5cfbfcfea212c5d47b1f87cd49df013e38f8580a9e7aa1384918df0921b4ba999d5e73eb6d6362cce2d7287e64308b673963')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	sed -i '/LIBTOOL_INSTALL/d' c++/Makefile.in
+	./configure --prefix=/usr           \
+            --mandir=/usr/share/man \
+            --with-shared           \
+            --without-debug         \
+            --without-normal        \
+            --enable-pc-files       \
+            --enable-widec
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install
+	install -d $pkgdir/lib
+	mv -v $pkgdir/usr/lib/libncursesw.so.6* $pkgdir/lib
+	ln -sfv $(readlink /usr/lib/libncursesw.so) $pkgdir/usr/lib/libncursesw.so
+	for lib in ncurses form panel menu ; do
+	    rm -vf                    $pkgdir/usr/lib/lib${lib}.so
+	    echo "INPUT(-l${lib}w)" > $pkgdir/usr/lib/lib${lib}.so
+		install -d				  $pkgdir/usr/lib/pkgconfig/
+	    ln -sfv ${lib}w.pc        $pkgdir/usr/lib/pkgconfig/${lib}.pc
+	done
+	rm -vf                     $pkgdir/usr/lib/libcursesw.so
+	echo "INPUT(-lncursesw)" > $pkgdir/usr/lib/libcursesw.so
+	ln -sfv libncurses.so      $pkgdir/usr/lib/libcurses.so
+}

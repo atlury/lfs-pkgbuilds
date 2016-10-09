@@ -1,0 +1,51 @@
+pkgname=systemd
+pkgver=231
+pkgrel=1
+pkgdesc='A system and service manager'
+arch=('x86_64')
+source=("http://anduin.linuxfromscratch.org/sources/other/$pkgname/$pkgname-$pkgver.tar.xz" "http://www.linuxfromscratch.org/patches/lfs/development/$pkgname-$pkgver-security_fix-1.patch")
+
+sha512sums=('329d0526b3f056589e226f6b838e3acccc3dddfbe4f5f097d56b5eadec8351bce136ba154e81b6c7520c6f176e73d78a19f536de0bfe4ec030e28b477f979392'
+            '03638acf1bb541db74fc0d285094ef823fc206de74ac8cb64eebf786e81fdccfc464f378319adb7821bf7a7f2f8f2629c93ca97c44f5aa1acf1de392544ddc88')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    sed -e 's:test/udev-test.pl ::g'  \
+    -e 's:test-copy$(EXEEXT) ::g' \
+    -i Makefile.in
+    patch -Np1 -i $srcdir/systemd-231-security_fix-1.patch
+    XSLTPROC="/usr/bin/xsltproc"         \
+    ./configure --prefix=/usr            \
+            --sysconfdir=/etc        \
+            --localstatedir=/var     \
+            --with-rootprefix=       \
+            --with-rootlibdir=/lib   \
+            --enable-split-usr       \
+            --disable-firstboot      \
+            --disable-ldconfig       \
+            --disable-sysusers       \
+            --without-python         \
+            --with-default-dnssec=no \
+            --without-kill-user-processes \
+            --docdir=/usr/share/doc/systemd-231
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    install -dm2755 $pkgdir/var/log/journal
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/lib
+    install -d $pkgdir/sbin
+    mv -v $pkgdir/usr/lib/libnss_{myhostname,mymachines,resolve}.so.2 $pkgdir/lib
+    for tool in runlevel reboot shutdown poweroff halt telinit; do
+         ln -sfv ../bin/systemctl $pkgdir/sbin/${tool}
+    done
+    ln -sfv ../lib/systemd/systemd $pkgdir/sbin/init
+    rm -fv $pkgdir/etc/resolv.conf
+    ln -s ../lib/systemd/resolv.conf $pkgdir/etc/resolv.conf
+}
+
+post_install() {
+    systemd-machine-id-setup
+}

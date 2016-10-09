@@ -1,0 +1,30 @@
+pkgname=kmod
+pkgver=23
+pkgrel=1
+pkgdesc='Libraries and utilities for loading kernel modules'
+arch=('x86_64')
+source=("https://www.kernel.org/pub/linux/utils/kernel/$pkgname/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('84b18d35117b33c48fd9b732a584a9f94caef553e371bd4e68953540f46fc6c7145c8c7163df898875437ad56e1a47e89be26531314299bce0026c46da9dd3c0')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr          \
+            --bindir=/bin          \
+            --sysconfdir=/etc      \
+            --with-rootlibdir=/lib \
+            --with-xz              \
+            --with-zlib
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/{s,}bin
+    for target in depmod insmod lsmod modinfo modprobe rmmod; do
+        ln -sfv ../bin/kmod $pkgdir/sbin/$target
+    done
+    ln -sfv kmod $pkgdir/bin/lsmod
+}
+

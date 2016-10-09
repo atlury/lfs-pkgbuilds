@@ -1,0 +1,18 @@
+pkgname=gdbm
+pkgver=1.12
+pkgrel=1
+pkgdesc='The GNU Database Manager'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('25e03dceed6986f1977d304a5ad059ac6c603a88ad4aa18c831ec42df82d68006f2e04b8a3cc400d0a4970750c78ba24a3f84cdff70de9f278cfd854c059699e')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr \
+            --disable-static \
+            --enable-libgdbm-compat
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir install
+}

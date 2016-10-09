@@ -1,0 +1,21 @@
+pkgname=flex
+pkgver=2.6.1
+pkgrel=1
+pkgdesc='A utility for generating programs that recognize patterns in text'
+arch=('x86_64')
+source=("https://github.com/westes/flex/releases/download/v$pkgver/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('1e35d0447f59139b98ede085d1a603d4f61cf8bc11cf2e291a3f492a05c60ee61535481b878585cd6843cd9b3c7952c834adfa78a6a71c64802e7b3069dec9d1')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --docdir=/usr/share/doc/flex-2.6.1
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install
+    ln -sv flex $pkgdir/usr/bin/lex 
+}
+

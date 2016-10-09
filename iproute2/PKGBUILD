@@ -1,0 +1,20 @@
+pkgname=iproute2
+pkgver=4.7.0
+pkgrel=1
+pkgdesc='Programs for basic and advanced IPV4-based networking'
+arch=('x86_64')
+source=("https://www.kernel.org/pub/linux/utils/net/$pkgname/$pkgname-$pkgver.tar.xz")
+sha512sums=('dd884b192ede7f165d565dce6819fb7280eda880d4d53e06a604ab20e7ce343ba37847750172fd52061892e9db3d18bd8ae13d37bd4410e50a8f704cb3fe4ece')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	sed -i /ARPD/d Makefile
+	sed -i 's/arpd.8//' man/man8/Makefile
+	sed -i 's/m_ipt.o//' tc/Makefile
+	rm -v doc/arpd.sgml
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR=$pkgdir DOCDIR=/usr/share/doc/iproute2-4.7.0 install
+
+}

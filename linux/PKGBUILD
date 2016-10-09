@@ -1,0 +1,26 @@
+pkgname=linux
+pkgver=4.7.4
+pkgrel=1
+pkgdesc='The Linux kernel'
+arch=('x86_64')
+source=("https://www.kernel.org/pub/$pkgname/kernel/v4.x/$pkgname-$pkgver.tar.xz" "change-default-console-loglevel.patch" "lfsconfig")
+sha512sums=('5598548aeb4e48783e679ef1102a9a3bda24929ba6f6e37e73c9735b8003d3220254da89c3f2fe352f30a96d80c74cd2bd0db0c5763cc6e42a614b09e94f568e'
+            'd9d28e02e964704ea96645a5107f8b65cae5f4fb4f537e224e5e3d087fd296cb770c29ac76e0ce95d173bc420ea87fb8f187d616672a60a0cae618b0ef15b8c8'
+            '9de215cdd13ce6a801daf5eba5ec4e98d17d11ddf74074b329ca6f1abac7832f666b4025af73d5ee2821ccf1a6b554cd9064200911d7655ccff49a4be07f0a74')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make mrproper
+      patch -p1 -i "${srcdir}/change-default-console-loglevel.patch"
+	cp $srcdir/lfsconfig .config
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make INSTALL_MOD_PATH=$pkgdir modules_install
+	make DESTDIR=$pkgdir headers_install
+	install -d $pkgdir/boot
+	cp -v arch/x86/boot/bzImage $pkgdir/boot/vmlinuz-4.7.4-lfs-20160929-systemd
+	install -d $pkgdir/usr/share/doc/linux-4.7.4
+	cp -r Documentation/* $pkgdir/usr/share/doc/linux-4.7.4
+	cp -v .config $pkgdir/boot/lfsconfig-4.7.4
+}

@@ -1,0 +1,34 @@
+pkgname=bzip2
+pkgver=1.0.6
+pkgrel=1
+pkgdesc='Library and command line tools for bz2 compressed files'
+arch=('x86_64')
+source=("http://www.bzip.org/$pkgver/$pkgname-$pkgver.tar.gz" "http://www.linuxfromscratch.org/patches/lfs/development/$pkgname-$pkgver-install_docs-1.patch")
+sha512sums=('00ace5438cfa0c577e5f578d8a808613187eff5217c35164ffe044fbafdfec9e98f4192c02a7d67e01e5a5ccced630583ad1003c37697219b0f147343a3fdd12'
+            '77dc32bab57cef0b0a671f9db5fd36e8d0bbedd28eca9c644ad77f5ec7e32d63dfff1f90b297afc4cb12134ab052da0872c5f679e264e9cdc3f2545d72dbadc7')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    patch -Np1 -i $srcdir/bzip2-1.0.6-install_docs-1.patch
+    sed -i 's@\(ln -s -f \)$(PREFIX)/bin/@\1@' Makefile
+    sed -i "s@(PREFIX)/man@(PREFIX)/share/man@g" Makefile
+    make -f Makefile-libbz2_so
+    make clean
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    install -dm755 $pkgdir/usr/{bin,lib,include,share/man/man1}
+    install -dm755 $pkgdir/bin
+    install -dm755 $pkgdir/lib
+    install -m644 bzlib.h $pkgdir/usr/include/
+    install -m755 bzip2-shared $pkgdir/bin/bzip2
+    cp -av libbz2.so* $pkgdir/lib
+    install -m755 bzip2recover bzdiff bzgrep bzmore $pkgdir/usr/bin
+    ln -sf bzip2 $pkgdir/usr/bin/bunzip2
+    ln -sf bzip2 $pkgdir/usr/bin/bzcat
+    install -m644 bzip2.1 $pkgdir/usr/share/man/man1/
+    ln -sv ../../lib/libbz2.so.1.0 $pkgdir/usr/lib/libbz2.so   
+}
+

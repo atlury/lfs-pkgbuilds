@@ -1,0 +1,27 @@
+pkgname=mpfr
+pkgver=3.1.4
+pkgrel=1
+pkgdesc='Multiple-precision floating-point library'
+arch=('x86_64')
+source=("http://www.mpfr.org/$pkgname-$pkgver/$pkgname-$pkgver.tar.xz")
+
+sha512sums=('4ef61708834efdea6b85258f46f1b25ce1c55b912f44b117d8c3d5e06d8f1177e50f627d9736f3289bd159c5bb10c80e09d1ad9f6f52c4ff43c3496034b04232')
+
+build() {       
+    #export CFLAGS=""
+    #export CXXFLAGS=""
+    #export LDFLAGS=""
+    cd $srcdir/$pkgname-$pkgver
+    ./configure --prefix=/usr        \
+                --disable-static     \
+                --enable-thread-safe \
+                --docdir=/usr/share/doc/mpfr-3.1.4
+    make
+    make html
+}
+
+package() { 
+    cd $srcdir/$pkgname-$pkgver
+    make DESTDIR=$pkgdir install
+    make DESTDIR=$pkgdir doc install-html
+}

@@ -1,0 +1,31 @@
+pkgname=inetutils
+pkgver=1.9.4
+pkgrel=1
+pkgdesc='Programs for basic networking'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('8074eb230c64d8fb0f3a20825b9329e5648b81941bb3441c5ffe2661c428f93fe2bac222d5334e75ef182083124c4bc5d7ebf8090ed667e4ae33b9aaacbc6dcb')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr        \
+            --localstatedir=/var \
+            --disable-logger     \
+            --disable-whois      \
+            --disable-rcp        \
+            --disable-rexec      \
+            --disable-rlogin     \
+            --disable-rsh        \
+            --disable-servers
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    install -d $pkgdir/{s,}bin
+    mv -v $pkgdir/usr/bin/{hostname,ping,ping6,traceroute} $pkgdir/bin
+    mv -v $pkgdir/usr/bin/ifconfig $pkgdir/sbin
+}
+

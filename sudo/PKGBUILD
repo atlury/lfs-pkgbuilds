@@ -1,0 +1,27 @@
+pkgname=sudo
+pkgver=1.8.17p1
+pkgrel=1
+pkgdesc='Give certain users the ability to run some commands as root'
+arch=('x86_64')
+source=("http://www.sudo.ws/dist/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('e9facd2d5578d4effb516931322b5f4f9578baa779cba281d36a3d0995b1fd9d085d6b141544b3dc698569fa294163bbad9f779166a05a0f18f4ad81a630b954')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr              \
+            --libexecdir=/usr/lib      \
+            --with-secure-path         \
+            --with-all-insults         \
+            --with-env-editor          \
+            --docdir=/usr/share/doc/sudo-1.8.17p1 \
+            --with-passprompt="[sudo] password for %p: " &&
+make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    ln -sfv libsudo_util.so.0.0.0 $pkgdir/usr/lib/sudo/libsudo_util.so.0
+}
+

@@ -1,0 +1,31 @@
+pkgname=e2fsprogs
+pkgver=1.43.3
+pkgrel=1
+pkgdesc='Utilities for handling the ext2/3/4 filesystems'
+arch=('x86_64')
+source=("http://downloads.sourceforge.net/project/$pkgname/$pkgname/v$pkgver/$pkgname-$pkgver.tar.gz")
+sha512sums=('77e753f77222a0a7a334d7d93c900ea6cb339ed40af29952e414fc4e45d8c5c01d67771978a941195effe666df965746c2b31977c5f05ff307429b978dac8dea')
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	mkdir -v build
+	cd build
+	../configure --prefix=/usr           \
+             --bindir=/bin           \
+             --with-root-prefix=""   \
+             --enable-elf-shlibs     \
+             --disable-libblkid      \
+             --disable-libuuid       \
+             --disable-uuidd         \
+             --disable-fsck
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	cd build
+	make DESTDIR=$pkgdir install
+	make DESTDIR=$pkgdir install-libs
+
+	chmod -v u+w $pkgdir/usr/lib/{libcom_err,libe2p,libext2fs,libss}.a
+	gunzip -v $pkgdir/usr/share/info/libext2fs.info.gz
+	install-info --dir-file=$pkgdir/usr/share/info/dir $pkgdir/usr/share/info/libext2fs.info
+}

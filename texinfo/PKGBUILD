@@ -1,0 +1,21 @@
+pkgname=texinfo
+pkgver=6.3
+pkgrel=1
+pkgdesc='Programs for reading, writing, and converting info pages'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('59f95bd79fd13ccbccced7a041345b00cf5e6d0230a51d46b3030ca4b3204d3b44adae6b7dab7116463cbfd73e49353e062c40c87dded1c2f18ed9a7e2d64800')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --disable-static
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+    make DESTDIR=$pkgdir TEXMF=/usr/share/texmf install-tex
+}
+

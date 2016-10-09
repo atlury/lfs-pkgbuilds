@@ -1,0 +1,20 @@
+pkgname=patch
+pkgver=2.7.5
+pkgrel=1
+pkgdesc='A program for creating patches made from a diff'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+
+sha512sums=('da5d9e35b35ef2da0716ceec77aeaa7af9a4fb4e193eaed4b7d04653aecce4557722ab65fe9c45b0a67fc4789470e88d97781f0261633abcff85e3aa1da00732')
+
+build() {
+    cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr
+    make
+}
+
+package() {
+    cd "$srcdir/$pkgname-$pkgver"
+    make DESTDIR=$pkgdir install 
+}
+
