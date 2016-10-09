@@ -1,0 +1,18 @@
+pkgname=libgpg-error
+pkgver=1.24
+pkgrel=1
+pkgdesc='An error library for gnupg components'
+arch=('x86_64')
+source=("ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.bz2")
+sha512sums=('d577ebf36251402dd27187056f7c54cea226119f499d1c3bc1c4201ba4d2ae4a9dcefdf4502411cfcffe52b1cefab8c2cfddfa16b7e6ad3b49305a3394ccca31')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	install -v -m644 -D README "$pkgdir"/usr/share/doc/libgpg-error-1.24/README
+}

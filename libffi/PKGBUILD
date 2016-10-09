@@ -1,0 +1,24 @@
+pkgname=libffi
+pkgver=3.2.1
+pkgrel=1
+pkgdesc='A library for a portable, high level programming interface to various calling conventions'
+arch=('x86_64')
+source=("ftp://sourceware.org/pub/$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('980ca30a8d76f963fca722432b1fe5af77d7a4e4d2eac5144fbc5374d4c596609a293440573f4294207e1bdd9fda80ad1e1cafb2ffb543df5a275bc3bd546483')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	sed -e '/^includesdir/ s/$(libdir).*$/$(includedir)/' \
+    -i include/Makefile.in 
+
+sed -e '/^includedir/ s/=.*$/=@includedir@/' \
+    -e 's/^Cflags: -I${includedir}/Cflags:/' \
+    -i libffi.pc.in        
+
+	./configure --prefix=/usr --disable-static 
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

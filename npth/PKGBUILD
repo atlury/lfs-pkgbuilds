@@ -1,0 +1,17 @@
+pkgname=npth
+pkgver=1.2
+pkgrel=1
+pkgdesc='A portable POSIX library which provides multithreading inside event-driven programs'
+arch=('x86_64')
+source=("ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.bz2")
+sha512sums=('3f02fdf3553c6cda8973ce1a7d6625433a87c891c51d4d7fd64bba375d673a6a874c25d8f272ca14e6b6bf43bf8e7113826f6fe3befadc4b12d5126e8998af57')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

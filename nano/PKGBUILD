@@ -1,0 +1,23 @@
+pkgname=nano
+pkgver=2.6.3
+pkgrel=1
+pkgdesc='Description goes here'
+arch=('x86_64')
+source=("https://www.$pkgname-editor.org/dist/v2.6/$pkgname-$pkgver.tar.xz")
+sha512sums=('41e191dae9c0436e0fe7851217c308e12552b960685cf371681dc03e10c9d1f0174984ed01e3a95c9293c1a70e24ec042de0f1390aa103957cc6dc66d63dfa9a')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr     \
+            --sysconfdir=/etc \
+            --enable-utf8     \
+            --docdir=/usr/share/doc/nano-2.6.3
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	install -d "$pkgdir"/etc
+	install -v -m644 doc/nanorc.sample "$pkgdir"/etc
+	install -v -m644 doc/texinfo/nano.html "$pkgdir"/usr/share/doc/nano-2.6.3
+}

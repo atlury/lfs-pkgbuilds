@@ -1,0 +1,17 @@
+pkgname=pinentry
+pkgver=0.9.7
+pkgrel=1
+pkgdesc='A collection of simple PIN entry dialogs utilizing the Assuan protocol'
+arch=('x86_64')
+source=("ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.bz2")
+sha512sums=('9c5bc8f7246e8b0affd83fea6e64c47cecf6a12515a82dd2a6712b230306a9c3c97da4dbf6519ea98c85c88bf180a5a2b8c46cedcd594f224e5a08f2f0e35bf0')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

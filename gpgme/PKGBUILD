@@ -1,0 +1,17 @@
+pkgname=gpgme
+pkgver=1.6.0
+pkgrel=1
+pkgdesc='A cryptographic support library'
+arch=('x86_64')
+source=("ftp://ftp.gnupg.org/gcrypt/$pkgname/$pkgname-$pkgver.tar.bz2")
+sha512sums=('b7ccccc2bac246b0759c8752cadd3e77f03da39711badfc66d0f21cefab3f3b07fe1038611ad9ca1c16a8a48d7e831dcca68d83d052456a4cf794a73e287d41b')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

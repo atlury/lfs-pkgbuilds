@@ -1,0 +1,17 @@
+pkgname=libarchive
+pkgver=3.2.1
+pkgrel=1
+pkgdesc='A library that provides a single interface for various archive formats'
+arch=('x86_64')
+source=("http://www.$pkgname.org/downloads/$pkgname-$pkgver.tar.gz")
+sha512sums=('a5d43cb0bf36b687fabfbc874e7adc1fa94c563e7f073e107db8d4e79e8d0d8146cb985809f8115fbb882fc2d8a2a477d0a7364e93e6df62f292bb5e9865ec5c')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr --disable-static
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

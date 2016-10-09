@@ -1,0 +1,21 @@
+pkgname=fakeroot
+pkgver=1.21
+pkgrel=1
+pkgdesc='Creates a fakeroot environment, useful for packaging purposes'
+arch=('x86_64')
+source=("http://http.debian.net/debian/pool/main/f/fakeroot/${pkgname}_${pkgver}.orig.tar.gz" "silence-dlerror.patch")
+sha512sums=('b55ec626bbe4ce7df7d3ea519db34961163ef824143d08366af2931e2576db6fa532e7cb49eab49f7566228058bc269555444d8bbc28b6937d1d43e9df11cb13'
+            '255366c8597f015fe718fdae1a913d165d2139f9983ec9ff1933dd44049722aeac267ef87af2f274760ce5da64a18d32fc243af7a915739b0ba46b46145c4ce3')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    patch -p1 -i "$srcdir"/silence-dlerror.patch
+	./bootstrap
+	./configure --prefix=/usr
+	sed -i 's/SUBDIRS\ \=\ scripts\ doc\ test/SUBDIRS\ \=\ scripts\ test/g' Makefile
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

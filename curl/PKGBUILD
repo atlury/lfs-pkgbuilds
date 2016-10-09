@@ -1,0 +1,27 @@
+pkgname=curl
+pkgver=7.50.3
+pkgrel=1
+pkgdesc='A utility and set of libraries for transferring files over URL'
+arch=('x86_64')
+source=("https://$pkgname.haxx.se/download/$pkgname-$pkgver.tar.gz")
+md5sums=('870e16fd88a88b52e26a4f04dfc161db')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr              \
+            --disable-static           \
+            --enable-threaded-resolver
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	rm -rf docs/examples/.deps &&
+	find docs \( -name Makefile\* \
+	          -o -name \*.1       \
+	          -o -name \*.3 \)    \
+	          -exec rm {} \;      &&
+	install -v -d -m755 "$pkgdir"/usr/share/doc/curl-7.50.1
+	cp -v -R docs/*     "$pkgdir"/usr/share/doc/curl-7.50.1
+
+}

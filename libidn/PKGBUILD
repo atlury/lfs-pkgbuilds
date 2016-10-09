@@ -1,0 +1,21 @@
+pkgname=libidn
+pkgver=1.33
+pkgrel=1
+pkgdesc='Utilities for internationalized string handling'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('38dd459eaeda0c9e3cc2d24d967113515a499747550a2a9157f32357def90d71a3a3b52398e96a44a28cd5948dc353b0473c4ff0453a69720191c4cb49cac2c6')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr --disable-static
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	find doc -name "Makefile*" -delete            
+	rm -rf -v doc/{gdoc,idn.1,stamp-vti,man,texi} 
+	install -d       "$pkgdir"/usr/share/doc/libidn-1.33 
+	cp -r -v doc/* "$pkgdir"/usr/share/doc/libidn-1.33
+}

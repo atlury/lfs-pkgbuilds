@@ -1,0 +1,20 @@
+pkgname=lzo
+pkgver=2.09
+pkgrel=1
+pkgdesc='A compression library that focuses on speed over compression'
+arch=('x86_64')
+source=("http://www.oberhumer.com/opensource/$pkgname/download/$pkgname-$pkgver.tar.gz")
+sha512sums=('7c64e5e7d2050d75ac8c59d613f6f7230b74746b1d207666755b07450053c8b73980f12f8a1ec59d2af0bada02beec126aaacb675b8088b5fe65e97ff7e6bfc7')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr                    \
+            --enable-shared                  \
+            --disable-static                 \
+            --docdir=/usr/share/doc/lzo-2.09
+make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

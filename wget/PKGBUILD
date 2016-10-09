@@ -1,0 +1,22 @@
+pkgname=wget
+pkgver=1.18
+pkgrel=1
+pkgdesc='A utility for non-interactiving downloading of files from the web'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.xz")
+md5sums=('af9ca95a4bb8ac4a9bf10aeae66fa5ec')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr      \
+                    --sysconfdir=/etc
+    make
+
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+    echo ca-directory=/etc/ssl/certs >> "$pkgdir"/etc/wgetrc
+
+}
+

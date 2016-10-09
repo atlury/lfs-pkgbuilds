@@ -1,0 +1,41 @@
+pkgname=openssh
+pkgver=7.3p1
+pkgrel=1
+pkgdesc='The OpenBSD implementation of SSH'
+arch=('x86_64')
+source=("http://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/$pkgname-$pkgver.tar.gz")
+sha512sums=('7ba2d6140f38bd359ebf32ef17626e0ae1c00c3a38c01877b7c6b0317d030f10a8f82a0a51fc3b6273619de9ed73e24b8cf107b1e968f927053a3bedf97ff801')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr                     \
+            --sysconfdir=/etc/ssh             \
+            --with-md5-passwords              \
+            --with-privsep-path=/var/lib/sshd
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	install -v -m755    contrib/ssh-copy-id "$pkgdir"/usr/bin     
+
+	install -v -m644    contrib/ssh-copy-id.1 \
+	                    "$pkgdir"/usr/share/man/man1              
+	install -v -m755 -d "$pkgdir"/usr/share/doc/openssh-7.3p1     
+	install -v -m644    INSTALL LICENCE OVERVIEW README* \
+	                    "$pkgdir"/usr/share/doc/openssh-7.3p1
+}
+
+post_install() {
+
+	install  -v -m700 -d "$pkgdir"/var/lib/sshd
+	chown    -v root:sys "$pkgdir"/var/lib/sshd 
+
+	groupadd -g 50 sshd        
+	useradd  -c 'sshd PrivSep' \
+	         -d /var/lib/sshd  \
+	         -g sshd           \
+	         -s /bin/false     \
+	         -u 50 sshd
+
+}

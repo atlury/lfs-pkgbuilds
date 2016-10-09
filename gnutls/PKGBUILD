@@ -1,0 +1,20 @@
+pkgname=gnutls
+pkgver=3.5.4
+pkgrel=1
+pkgdesc='Contains libraries and userspace tools which provide a secure layer over a reliable transport layer'
+arch=('x86_64')
+source=("ftp://ftp.$pkgname.org/gcrypt/$pkgname/v3.5/$pkgname-$pkgver.tar.xz")
+sha512sums=('175aab43b6349a62530938333910feb26ea5d923e151a9942fd5a6989f87193b18862e69bbbdb6308f889585d428d689d8fd3a6e8149f9fd1ac2882802ea6a9f')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr \
+            --with-default-trust-store-file=/etc/ssl/ca-bundle.crt
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" -C doc/reference install-data-local
+
+}

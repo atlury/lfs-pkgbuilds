@@ -1,0 +1,19 @@
+pkgname=libtasn1
+pkgver=4.9
+pkgrel=1
+pkgdesc='The ASN.1 library used for GNUTLS'
+arch=('x86_64')
+source=("http://ftp.gnu.org/gnu/$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('1fb2c5eb89f3e9abd8f7433342619e3d89576ed15a783b8152ed9da0383342f80e750c570733ac266bc8a3c4b23e5e2a57e3735b2341d507e7d88ac366a8d6e7')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr --disable-static
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	make DESTDIR="$pkgdir" -C doc/reference install-data-local
+
+}

@@ -1,0 +1,28 @@
+pkgname=pcre
+pkgver=8.39
+pkgrel=1
+pkgdesc='Libraries for implementing regex using Perl 5 syntax'
+arch=('x86_64')
+source=("ftp://ftp.csx.cam.ac.uk/pub/software/programming/$pkgname/$pkgname-$pkgver.tar.bz2")
+sha512sums=('8b0f14ae5947c4b2d74876a795b04e532fd71c2479a64dbe0ed817e7c7894ea3cae533413de8c17322d305cb7f4e275d72b43e4e828eaca77dc4bcaf04529cf6')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+	./configure --prefix=/usr                     \
+            --docdir=/usr/share/doc/pcre-8.39 \
+            --enable-unicode-properties       \
+            --enable-pcre16                   \
+            --enable-pcre32                   \
+            --enable-pcregrep-libz            \
+            --enable-pcregrep-libbz2          \
+            --enable-pcretest-libreadline     \
+            --disable-static                 
+	make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+	install -d "$pkgdir"/lib
+	mv -v "$pkgdir"/usr/lib/libpcre.so.* "$pkgdir"/lib
+	ln -sfv $(readlink /usr/lib/libpcre.so) "$pkgdir"/usr/lib/libpcre.so
+}

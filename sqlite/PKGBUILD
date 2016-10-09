@@ -1,0 +1,22 @@
+pkgname=sqlite
+pkgver=3140100
+pkgrel=1
+pkgdesc='A simple but powerful SQL database'
+arch=('x86_64')
+source=("http://sqlite.org/2016/${pkgname}-autoconf-$pkgver.tar.gz")
+sha512sums=('14d78eea1aef5bd143f942b88f01ef2c1ef58aeac6c0a10c0807761ac5301b71db7d787f82ba8215d804b80c115ee4800072d4aa86616d04d01aaf529e168461')
+
+build(){
+	cd "$srcdir/${pkgname}-autoconf-$pkgver"
+	./configure --prefix=/usr --disable-static        \
+            CFLAGS="-g -O2 -DSQLITE_ENABLE_FTS3=1 \
+            -DSQLITE_ENABLE_COLUMN_METADATA=1     \
+            -DSQLITE_ENABLE_UNLOCK_NOTIFY=1       \
+            -DSQLITE_SECURE_DELETE=1              \
+            -DSQLITE_ENABLE_DBSTAT_VTAB=1"
+	make
+}
+package(){
+	cd "$srcdir/${pkgname}-autoconf-$pkgver"
+	make DESTDIR="$pkgdir" install
+}
