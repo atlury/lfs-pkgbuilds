@@ -1,0 +1,17 @@
+pkgname=elinks
+pkgver=0.12pre6
+pkgrel=1
+pkgdesc='A powerful text-based web browser'
+arch=('x86_64')
+source=("http://$pkgname.or.cz/download/$pkgname-$pkgver.tar.bz2")
+sha512sums=('bff70faafea7c4739695a7fad8f659109894b318588f5a035a5594a6053238789259ce6067c2f5cb97448f138db143adebb23f84bf689bea209ba37573484b7f')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --sysconfdir=/etc/elinks --with-perl
+    make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

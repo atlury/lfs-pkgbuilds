@@ -1,0 +1,17 @@
+pkgname=nmap
+pkgver=7.12
+pkgrel=1
+pkgdesc='A utility for network exploration and security auditing'
+arch=('x86_64')
+source=("http://$pkgname.org/dist/$pkgname-$pkgver.tar.bz2")
+sha512sums=('91156499c6f903fb565fa2b0faa74043d078493312f9489071fafc687301017afc16c7eb26c092f1fa142e78c98a436833f56a9f015cb2a17aa6f6220b6a0b98')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --with-liblua=included
+    make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

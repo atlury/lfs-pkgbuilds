@@ -28,8 +28,8 @@ package(){
 
 post_install() {
 
-	install  -v -m700 -d "$pkgdir"/var/lib/sshd
-	chown    -v root:sys "$pkgdir"/var/lib/sshd 
+	install  -v -m700 -d /var/lib/sshd
+	chown    -v root:sys /var/lib/sshd 
 
 	groupadd -g 50 sshd        
 	useradd  -c 'sshd PrivSep' \

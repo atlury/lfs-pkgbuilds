@@ -1,0 +1,17 @@
+pkgname=bash-completion
+pkgver=2.4
+pkgrel=1
+pkgdesc='Scripts for bash completion'
+arch=('x86_64')
+source=("https://github.com/scop/$pkgname/releases/download/$pkgver/$pkgname-$pkgver.tar.xz")
+sha512sums=('b852e0a38417dfc3754a91dae2d107f99a3c2970d835a4bbaa80f2a4db8d670bc3820ddc6ada26f68070f22fb4c1db7abe50ad489b1c0f8497b1e6e91be27627')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --sysconfdir=/etc
+    make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}
