@@ -1,0 +1,18 @@
+pkgname=perl-module-uri
+_pkgname=URI
+pkgver=1.71
+pkgrel=1
+pkgdesc='A Perl module for interacting with URIs'
+arch=('x86_64')
+source=("http://www.cpan.org/authors/id/E/ET/ETHER/$_pkgname-$pkgver.tar.gz")
+sha512sums=('db412b75054a4d315eb861060fa4641832c2428b9dfe56bbe35f530c9ba572d4de2061d9782454750293dd5a64f3375830988d8512f410e84a9d599c80458405')
+
+build(){
+	cd "$srcdir/$_pkgname-$pkgver"
+    perl Makefile.PL
+    make
+}
+package(){
+	cd "$srcdir/$_pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

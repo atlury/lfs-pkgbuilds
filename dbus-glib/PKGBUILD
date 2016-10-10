@@ -1,0 +1,19 @@
+pkgname=dbus-glib
+pkgver=0.106
+pkgrel=1
+pkgdesc='Provides GLib interfaces to the D-Bus API'
+arch=('x86_64')
+source=("http://dbus.freedesktop.org/releases/$pkgname/$pkgname-$pkgver.tar.gz")
+sha512sums=('13a1d4600add29d29dbb8d1271570e6c04f70ddff0862d28fcb7df774bfa76a961f90303f897f3b970070eb959e909d5d02a94941e2edd8ba315b9aaa3a602cb')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr     \
+    --sysconfdir=/etc \
+    --disable-static
+    make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}

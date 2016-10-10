@@ -1,0 +1,17 @@
+pkgname=glib
+pkgver=2.48.2
+pkgrel=1
+pkgdesc='Low level libraries for data structure handling in C'
+arch=('x86_64')
+source=("http://ftp.gnome.org/pub/gnome/sources/$pkgname/2.48/$pkgname-$pkgver.tar.xz")
+sha512sums=('2eac104eb2207d0a6488992e48069a34b417f51e141364f281ab7b0953a6de88be177b1c694dd9464a856c9a5d8021e3cf0193a8d9c5aaf6ea11f1f9ff743c43')
+
+build(){
+	cd "$srcdir/$pkgname-$pkgver"
+    ./configure --prefix=/usr --with-pcre=system
+    make
+}
+package(){
+	cd "$srcdir/$pkgname-$pkgver"
+	make DESTDIR="$pkgdir" install
+}
