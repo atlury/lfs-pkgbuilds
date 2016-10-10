@@ -24,5 +24,5 @@ package(){
 	make DESTDIR="$pkgdir" install
 	install -d "$pkgdir"/lib
 	mv -v "$pkgdir"/usr/lib/libpcre.so.* "$pkgdir"/lib
-	ln -sfv $(readlink /usr/lib/libpcre.so) "$pkgdir"/usr/lib/libpcre.so
+	ln -sfv ../../lib/$(readlink /usr/lib/libpcre.so) "$pkgdir"/usr/lib/libpcre.so
 }

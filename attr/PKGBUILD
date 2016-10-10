@@ -20,5 +20,5 @@ package(){
 	chmod -v 755 $pkgdir/usr/lib/libattr.so
 	install -d $pkgdir/lib
 	mv -v $pkgdir/usr/lib/libattr.so.* $pkgdir/lib
-	ln -sfv $(readlink /usr/lib/libattr.so) $pkgdir/usr/lib/libattr.so
+	ln -sfv ../../lib/$(readlink /usr/lib/libattr.so) $pkgdir/usr/lib/libattr.so
 }

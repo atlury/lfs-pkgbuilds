@@ -24,6 +24,6 @@ package() {
     install -d $pkgdir/lib
     mv -v   $pkgdir/usr/bin/{lzma,unlzma,lzcat,xz,unxz,xzcat} $pkgdir/bin
     mv -v $pkgdir/usr/lib/liblzma.so.* $pkgdir/lib
-    ln -svf $(readlink /usr/lib/liblzma.so) $pkgdir/usr/lib/liblzma.so
+    ln -svf ../../$(readlink /usr/lib/liblzma.so) $pkgdir/usr/lib/liblzma.so
 }
 

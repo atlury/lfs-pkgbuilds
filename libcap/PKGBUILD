@@ -16,5 +16,5 @@ package(){
 	chmod -v 755 $pkgdir/usr/lib64/libcap.so
 	install -d $pkgdir/lib64
 	mv -v $pkgdir/usr/lib64/libcap.so.* $pkgdir/lib64
-	ln -sfv $(readlink /usr/lib64/libcap.so) $pkgdir/usr/lib64/libcap.so
+	ln -sfv ../../lib/$(readlink /usr/lib64/libcap.so) $pkgdir/usr/lib64/libcap.so
 }

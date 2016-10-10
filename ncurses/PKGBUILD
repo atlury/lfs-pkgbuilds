@@ -22,7 +22,7 @@ package(){
 	make DESTDIR=$pkgdir install
 	install -d $pkgdir/lib
 	mv -v $pkgdir/usr/lib/libncursesw.so.6* $pkgdir/lib
-	ln -sfv $(readlink /usr/lib/libncursesw.so) $pkgdir/usr/lib/libncursesw.so
+	ln -sfv ../../lib/$(readlink /usr/lib/libncursesw.so) $pkgdir/usr/lib/libncursesw.so
 	for lib in ncurses form panel menu ; do
 	    rm -vf                    $pkgdir/usr/lib/lib${lib}.so
 	    echo "INPUT(-l${lib}w)" > $pkgdir/usr/lib/lib${lib}.so

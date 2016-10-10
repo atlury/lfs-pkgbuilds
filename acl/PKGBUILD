@@ -23,5 +23,5 @@ package(){
 	chmod -v 755 $pkgdir/usr/lib/libacl.so
 	install -d $pkgdir/lib
 	mv -v $pkgdir/usr/lib/libacl.so.* $pkgdir/lib
-	ln -sfv $(readlink /usr/lib/libacl.so) $pkgdir/usr/lib/libacl.so
+	ln -sfv ../../lib/$(readlink /usr/lib/libacl.so) $pkgdir/usr/lib/libacl.so
 }

@@ -24,7 +24,7 @@ package() {
     cd "$srcdir/$pkgname-$pkgver"
     make DESTDIR=$pkgdir install 
     mv -v $pkgdir/usr/lib/libdbus-1.so.* $pkgdir/lib
-    ln -sfv $(readlink /usr/lib/libdbus-1.so) $pkgdir/usr/lib/libdbus-1.so
+    ln -sfv ../../$(readlink /usr/lib/libdbus-1.so) $pkgdir/usr/lib/libdbus-1.so
     ln -sfv /etc/machine-id $pkgdir/var/lib/dbus
 }
 
